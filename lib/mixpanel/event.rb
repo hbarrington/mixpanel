@@ -24,7 +24,6 @@ module Mixpanel::Event
   def track_event(event, properties, options, default_url)
     options.reverse_merge! :url => default_url, :async => @async, :api_key => @api_key
     url = build_url event, properties, options
-    Rails.logger.debug url
     parse_response request(url, options[:async])
   end
   
@@ -44,6 +43,7 @@ module Mixpanel::Event
 
   def build_url event, properties, options
     data = build_event event, track_properties(properties)
+    Rails.logger.debug data
     url = "#{options[:url]}?data=#{encoded_data(data)}"
     url << "&api_key=#{options[:api_key]}" if options[:api_key].present?
     url << "&img=1" if options[:img]
